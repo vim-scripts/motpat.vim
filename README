@@ -1,0 +1,32 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3030
+
+Create motion mappings defined by a pattern.
+The resulting keys can be used in Normal, Visual and Operator-pending mode; and they accept a count.
+
+Functions:
+
+motpat#Map({buf-local}, {lhs-forw}, {lhs-back}, {rhs-pat}[, {excl}])
+
+    {buf-local}		if non-zero, create buffer-local mappings, else global mappings
+    {lhs-forw}		key to be mapped for forward searching (not if empty)
+    {lhs-back}		key to be mapped for backward searching (not if empty)
+    {rhs-pat}		pattern to define the motion, will be part of the resulting {rhs} of the mapping
+    {excl}		type of motion, one of "e" (default), "i" or "l", for exclusive, inclusive or linewise, makes use of |o_v|.
+
+" the following two functions just omit one argument:
+motpat#Fmap({buf-local}, {lhs-forw}, {rhs-pat}[, {excl}])
+motpat#Bmap({buf-local}, {lhs-back}, {rhs-pat}[, {excl}])
+
+
+Examples:
+
+ftplugin/vim.vim >
+	" simpler definition of ]], [[, ][, [], [" and ]"
+
+	" Move around functions.
+	call motpat#Map(1, ']]', '[[', '^\s*fu\%[nction]\>')
+	call motpat#Map(1, '][', '[]', '^\s*endf\%[unction]\>', 'l')
+
+	" Move around comments
+	call motpat#Fmap(1, ']"', '\%(^\s*".*\n\)\%(^\s*"\)\@!', 'l')
+	call motpat#Bmap(1, '["', '\%(^\s*".*\n\)\@<!\%(^\s*"\)', 'l')

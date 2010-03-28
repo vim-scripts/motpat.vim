@@ -1,0 +1,48 @@
+*motpat.txt*	create motion mappings defined by a pattern
+
+For Vim 7.2 by Andy Wokula <anwoku@yahoo.de>, Last Change: 2010 Mar 28
+
+==============================================================================
+						*motpat#Map*
+motpat#Map({buf-local}, {lhs-forw}, {lhs-back}, {rhs-pat}[, {excl}])
+
+						*motpat#Fmap* *motpat#Bmap*
+motpat#Fmap({buf-local}, {lhs-forw}, {rhs-pat}[, {excl}])
+motpat#Bmap({buf-local}, {lhs-back}, {rhs-pat}[, {excl}])
+
+    Arguments: ~
+    {buf-local}		if non-zero, create buffer-local mappings, else global
+			mappings
+    {lhs-forw}		key to be mapped for forward searching (not if empty)
+    {lhs-back}		key to be mapped for backward searching (not if empty)
+    {rhs-pat}		pattern to define the motion, will be part of the
+			resulting {rhs} of the mapping
+    {excl}		type of motion, one of "e" (default), "i" or "l", for
+			exclusive, inclusive or linewise, makes use of |o_v|.
+
+==============================================================================
+EXAMPLES
+
+ftplugin/vim.vim >
+	" simpler definition of ]], [[, ][, [], [" and ]"
+
+	" Move around functions.
+	call motpat#Map(1, ']]', '[[', '^\s*fu\%[nction]\>')
+	call motpat#Map(1, '][', '[]', '^\s*endf\%[unction]\>', 'l')
+
+	" Move around comments
+	call motpat#Fmap(1, ']"', '\%(^\s*".*\n\)\%(^\s*"\)\@!', 'l')
+	call motpat#Bmap(1, '["', '\%(^\s*".*\n\)\@<!\%(^\s*"\)', 'l')
+
+------------------------------------------------------------------------------
+ftplugin/help.vim >
+	" navigate sections
+	call motpat#Map(1, ']]', '[[', '^===\|^---\|\%^\|\%$')
+
+------------------------------------------------------------------------------
+ftplugin/html.vim >
+	" redefine W and B
+	call motpat#Map(1, "W", "B", '<\|\%(^\|\s\)\zs\%(\/>\)\@!\S\|>\zs\S')
+
+------------------------------------------------------------------------------
+vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:ft=help:norl:
